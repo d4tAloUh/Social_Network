@@ -1,6 +1,9 @@
+import uuid
+
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -42,5 +45,21 @@ class CustomUser(AbstractUser):
         return self.email
 
 
+class CreatedAndUpdated(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
-# class
+    class Meta:
+        abstract = True
+
+
+class Post(CreatedAndUpdated):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    body = models.CharField(null=False, blank=False, max_length=255)
+
+
+class Reaction(CreatedAndUpdated):
+    is_like = models.BooleanField(null=False, blank=False)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
