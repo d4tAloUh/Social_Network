@@ -2,3 +2,6 @@ Test Task_Python_S.pdf
 venv
 .idea/
 **/__pycache__
+
+**/migrations/000*.py
+**/db.sqlite3
