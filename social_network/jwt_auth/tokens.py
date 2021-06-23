@@ -10,7 +10,7 @@ class Token:
     token_type = None
     lifetime = None
 
-    def __init__(self, token):
+    def __init__(self, token=None):
         self.token = token
         self.backend = JWTBackend
         # create token
@@ -30,6 +30,9 @@ class Token:
     def set_exp(self):
         from_time = datetime.datetime.utcnow()
         self.payload['exp'] = (from_time + self.lifetime).timestamp()
+
+    def __str__(self):
+        return self.backend.encode(self.payload)
 
     def set_jti(self):
         self.payload['jti'] = uuid.uuid4().hex
@@ -62,7 +65,28 @@ class Token:
         if token_type != self.token_type:
             raise TokenError("Token has wrong type")
 
+    @classmethod
+    def for_user(cls, user):
+        user_id = getattr(user, settings.USER_ID_FIELD)
+        token = cls()
+        token.payload[settings.USER_ID_FIELD] = user_id
+        return token
+
 
 class AccessToken(Token):
     token_type = 'access'
     lifetime = settings.ACCESS_TOKEN_LIFETIME
+
+
+class RefreshToken(Token):
+    token_type = 'refresh'
+    lifetime = settings.REFRESH_TOKEN_LIFETIME
+    unique_fields = ['token_type', 'exp', 'jti']
+
+    def get_access_token(self):
+        access = AccessToken()
+        for claim, value in self.payload.items():
+            if claim in self.unique_fields:
+                continue
+            access.payload[claim] = value
+        return access

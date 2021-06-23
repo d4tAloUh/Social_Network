@@ -12,7 +12,6 @@ class JWTAuthentication(authentication.BaseAuthentication):
     keyword = 'Bearer'
 
     def __init__(self):
-        super(JWTAuthentication, self).__init__()
         self.user_model = get_user_model()
 
     def authenticate(self, request):
@@ -51,7 +50,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
             raise exceptions.AuthenticationFailed('Invalid token')
 
         try:
-            user = self.user_model.objects.get(**{settings.USER_ID_FIELD: user_id})
+            user = self.user_model.objects.get(id=user_id)
         except self.user_model.DoesNotExist:
             raise exceptions.AuthenticationFailed('User not found', code='user_not_found')
 
