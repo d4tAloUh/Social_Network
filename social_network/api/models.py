@@ -55,11 +55,17 @@ class CreatedAndUpdated(models.Model):
 
 class Post(CreatedAndUpdated):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     body = models.CharField(null=False, blank=False, max_length=255)
+
+    def __str__(self):
+        return f"{self.id}: {self.user} || {self.created_at}"
 
 
 class Reaction(CreatedAndUpdated):
     is_like = models.BooleanField(null=False, blank=False)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.user} liked || {self.created_at}"
