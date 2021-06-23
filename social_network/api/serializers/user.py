@@ -5,10 +5,10 @@ from ..models import CustomUser
 class UserModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['email', 'date_joined']
+        fields = ['email', 'date_joined', 'last_activity']
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = (
