@@ -1,9 +1,11 @@
 import datetime
 import uuid
+from calendar import timegm
 
 from django.conf import settings
 from .backends import JWTBackend
 from .exceptions import TokenBackendError, TokenError
+from django.utils.timezone import is_naive, make_aware, utc
 
 
 class Token:
@@ -27,9 +29,14 @@ class Token:
 
             self.verify_token()
 
+    def make_utc(self, date_time):
+        if is_naive(date_time):
+            return make_aware(date_time, timezone=utc)
+        return date_time
+
     def set_exp(self):
-        from_time = datetime.datetime.utcnow()
-        self.payload['exp'] = (from_time + self.lifetime).timestamp()
+        from_time = self.make_utc(datetime.datetime.utcnow())
+        self.payload['exp'] = timegm((from_time + self.lifetime).utctimetuple())
 
     def __str__(self):
         return self.backend.encode(self.payload)
@@ -52,8 +59,9 @@ class Token:
         except KeyError:
             raise TokenError("Token has no expiration")
 
-        utc_exc_value = datetime.datetime.utcfromtimestamp(exp_value)
-        if utc_exc_value < datetime.datetime.utcnow():
+        utc_exc_value = self.make_utc(datetime.datetime.utcfromtimestamp(exp_value))
+
+        if utc_exc_value < self.make_utc(datetime.datetime.utcnow()):
             raise TokenError("Token has expired")
 
     def check_type(self):

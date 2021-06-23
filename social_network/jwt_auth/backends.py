@@ -18,5 +18,5 @@ class JWTBackend:
                 token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM], verify=verify,
                 options={"verify_signature": verify}
             )
-        except jwt.InvalidTokenError:
-            raise TokenBackendError('Token is invalid or expired')
+        except jwt.InvalidTokenError as e:
+            raise TokenBackendError(e)
