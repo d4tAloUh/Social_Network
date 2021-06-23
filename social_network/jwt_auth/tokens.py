@@ -1,0 +1,68 @@
+import datetime
+import uuid
+
+from django.conf import settings
+from .backends import JWTBackend
+from .exceptions import TokenBackendError, TokenError
+
+
+class Token:
+    token_type = None
+    lifetime = None
+
+    def __init__(self, token):
+        self.token = token
+        self.backend = JWTBackend
+        # create token
+        if token is None:
+            self.payload = {'token_type': self.token_type}
+            self.set_exp()
+            self.set_jti()
+        # verify token
+        else:
+            try:
+                self.payload = self.backend.decode(token, verify=True)
+            except TokenBackendError as e:
+                raise TokenError(e)
+
+            self.verify_token()
+
+    def set_exp(self):
+        from_time = datetime.datetime.utcnow()
+        self.payload['exp'] = (from_time + self.lifetime).timestamp()
+
+    def set_jti(self):
+        self.payload['jti'] = uuid.uuid4().hex
+
+    def verify_token(self):
+        self.check_exp()
+        self.check_jti()
+        self.check_type()
+
+    def check_jti(self):
+        if 'jti' not in self.payload:
+            raise TokenError("Token has no jti")
+
+    def check_exp(self):
+        try:
+            exp_value = self.payload['exp']
+        except KeyError:
+            raise TokenError("Token has no expiration")
+
+        utc_exc_value = datetime.datetime.utcfromtimestamp(exp_value)
+        if utc_exc_value < datetime.datetime.utcnow():
+            raise TokenError("Token has expired")
+
+    def check_type(self):
+        try:
+            token_type = self.payload['token_type']
+        except KeyError:
+            raise TokenError("Token has no type")
+
+        if token_type != self.token_type:
+            raise TokenError("Token has wrong type")
+
+
+class AccessToken(Token):
+    token_type = 'access'
+    lifetime = settings.ACCESS_TOKEN_LIFETIME
