@@ -1,6 +1,7 @@
 from rest_framework import generics, status
-from django.contrib.auth import authenticate
 from rest_framework.response import Response
+
+from .exceptions import TokenError
 from .serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 
 
@@ -9,8 +10,12 @@ class TokenView(generics.GenericAPIView):
     authentication_classes = []
 
     def post(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            return Response({'error': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
 

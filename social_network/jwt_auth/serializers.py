@@ -1,6 +1,5 @@
 from django.contrib.auth import authenticate
-from rest_framework import exceptions, serializers
-from api.models import CustomUser
+from rest_framework import serializers
 from .tokens import RefreshToken
 from django.contrib.auth.models import update_last_login
 
