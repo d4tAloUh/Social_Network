@@ -47,7 +47,7 @@ class CustomUser(AbstractUser):
 
 
 class CreatedAndUpdated(models.Model):
-    created_at = models.DateField(default=timezone.now)
+    created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:

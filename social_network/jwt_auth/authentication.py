@@ -21,17 +21,15 @@ class JWTAuthentication(authentication.BaseAuthentication):
             return None
 
         if len(header_parts) == 1:
-            msg = 'No credentials provided.'
-            raise exceptions.AuthenticationFailed(msg)
+            raise exceptions.AuthenticationFailed('No credentials provided.')
         elif len(header_parts) > 2:
-            msg = 'Invalid token header. Token string should not contain spaces.'
-            raise exceptions.AuthenticationFailed(msg)
+            raise exceptions.AuthenticationFailed('Invalid token header. Token string should not contain spaces.')
 
         try:
             raw_token = header_parts[1].decode()
         except UnicodeError:
-            msg = 'Invalid token header. Token string should not contain invalid characters.'
-            raise exceptions.AuthenticationFailed(msg)
+            raise exceptions.AuthenticationFailed(
+                'Invalid token header. Token string should not contain invalid characters.')
 
         validated_token = self.get_validated_token(raw_token)
 
