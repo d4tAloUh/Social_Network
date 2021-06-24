@@ -8,5 +8,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
     path('api/', include('jwt_auth.urls')),
+    path('api/', include('analytics.urls')),
     path('docs/', schema_view)
 ]

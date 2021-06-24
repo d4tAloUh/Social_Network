@@ -64,9 +64,11 @@ class Post(CreatedAndUpdated):
 
 
 class Reaction(CreatedAndUpdated):
-    is_like = models.BooleanField(null=False, blank=False)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.user} liked || {self.created_at}"
+
+    class Meta:
+        unique_together = ['user', 'post']

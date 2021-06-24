@@ -4,7 +4,6 @@ from .exceptions import TokenBackendError
 
 
 class JWTBackend:
-
     @staticmethod
     def encode(payload):
         jwt_payload = payload.copy()
