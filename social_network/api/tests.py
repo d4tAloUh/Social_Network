@@ -1,5 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from rest_framework.test import APITestCase
+from .models import Post, Reaction
 
 
 class UserManagerTest(TestCase):
@@ -36,3 +38,13 @@ class UserManagerTest(TestCase):
         with self.assertRaises(ValueError):
             User.objects.create_superuser(
                 email='test@gmail.com', password='qwe123', is_superuser=False)
+
+
+class PostsAndReactionAPIView(APITestCase):
+    def setUp(self) -> None:
+        User = get_user_model()
+        self.user = User.objects.create_user(email='test@gmail.com', password='qwe123')
+        Post.objects.bulk_create([
+            Post(user=self.user, body='bla bla'),
+            Post(user=self.user, body='bla bla')
+        ])

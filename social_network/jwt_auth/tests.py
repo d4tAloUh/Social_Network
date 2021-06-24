@@ -1,4 +1,4 @@
-from django.test import TestCase
+
 from rest_framework import exceptions
 from rest_framework.test import APITestCase, APIRequestFactory
 from django.urls import reverse
@@ -7,7 +7,6 @@ from .authentication import JWTAuthentication
 # Create your tests here.
 from api.models import CustomUser
 
-from .exceptions import TokenError
 from .tokens import RefreshToken
 
 class JWTAuthTest(APITestCase):
