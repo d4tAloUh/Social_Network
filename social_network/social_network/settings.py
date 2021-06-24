@@ -28,10 +28,12 @@ INSTALLED_APPS = [
     # 3rd party
     'rest_framework',
     'rest_framework_swagger',
+    'django_filters',
 
     # apps
     'api.apps.ApiConfig',
-    'jwt_auth.apps.JwtAuthConfig'
+    'jwt_auth.apps.JwtAuthConfig',
+    'analytics.apps.AnalyticsConfig'
 ]
 
 MIDDLEWARE = [
