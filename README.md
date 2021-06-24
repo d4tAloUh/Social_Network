@@ -3,13 +3,13 @@
 This is a test task for python developer built with Django, DRF. API has basic models as User, Post and Reaction.
 
 ### API has following features:
-⋅⋅* User signup
-⋅⋅* User login via jwt token
-⋅⋅* Post creation
-⋅⋅* Like Post
-⋅⋅* Unlike Post
-⋅⋅* Analytics about amount of likes aggregated by day
-⋅⋅* User activity analytics
+* User signup
+* User login via jwt token
+* Post creation
+* Like Post
+* Unlike Post
+* Analytics about amount of likes aggregated by day
+* User activity analytics
 
 ### JWT token was implemented as another django app
 
