@@ -1,15 +1,14 @@
 import os
 import random
-import sys
-
 import django
-from django.conf import settings
 import yaml
+
 from django.db import IntegrityError
 from faker import Faker
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'social_network.settings'
 django.setup()
+
 from api.models import Post, CustomUser, Reaction
 
 fake = Faker(['en_US'])
